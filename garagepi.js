@@ -5,7 +5,7 @@ var GPIO = require("onoff").Gpio;
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+//var io = require('socket.io')(server);
 var startTakingSnaps = false;
 
 require('console-stamp')(console, '[HH:MM:ss]');
@@ -31,17 +31,12 @@ app.get('/api/clickbutton', function(req, res) {
   state = 'closed';
   res.setHeader('Content-Type', 'application/json');
   res.end(state);
-  outputSequence(7, '10', 1000);
+  outputSequence(17, '10', 500);
 });
 
-app.get('/api/status', function(req, res) {
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ state: state }));
-  console.log('returning state: ' + state);
-});
 
 function outputSequence(pin, seq, timeout) {
-  var gpio = new GPIO(4, 'out');
+  var gpio = new GPIO(pin, 'out');
   gpioWrite(gpio, pin, seq, timeout);
 }
 
@@ -68,7 +63,7 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-function takeSnaps() {
+/* function takeSnaps() {
   var autoSnapshot = setTimeout(function() {
     var imgPath = path.join(__dirname, 'public/images');
     var cmd = 'raspistill -w 640 -h 480 -q 80 -o ' + imgPath + '/garage.jpg';
@@ -98,7 +93,7 @@ io.on('connection', function(socket){
     console.log('user disconnected');
     startTakingSnaps = false;
   });
-});
+});*/
 
 var port = process.env.PORT || 8000;
 server.listen(port, function() {
